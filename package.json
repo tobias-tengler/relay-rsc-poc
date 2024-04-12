@@ -6,7 +6,11 @@
   "workspaces": [
     "packages/*"
   ],
-  "scripts": {},
+  "scripts": {
+    "build": "pnpm run --filter=relay-rsc build",
+    "watch": "pnpm run --filter=relay-rsc watch",
+    "dev": "pnpm run --filter=example dev"
+  },
   "engines": {
     "node": ">=20",
     "pnpm": "8"

@@ -1,16 +1,27 @@
 {
   "name": "relay-rsc",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsup ./src --format esm --dts --out-dir ./dist",
+    "watch": "tsup ./src --format esm --dts --out-dir ./dist --watch"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "react-relay": "16.2.0",
     "relay-runtime": "16.2.0"
+  },
+  "devDependencies": {
+    "tsup": "8.0.2",
+    "typescript": "5.4.5"
+  },
+  "exports": {
+    ".": {
+      "react-server": "./dist/react-server/index.js",
+      "default": "./dist/react-client/index.js"
+    }
   }
 }
