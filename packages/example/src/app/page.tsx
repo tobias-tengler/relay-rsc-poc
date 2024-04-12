@@ -1,9 +1,9 @@
 import { Fragment } from "react";
 import { StreamedHydration, getStreamableQuery, useFragment } from "relay-rsc";
 import { graphql } from "relay-runtime";
-import { FilmDirector } from "./FilmDirector";
-import type { pageQuery } from "../__generated__/pageQuery.graphql";
 import type { pageFragment$key } from "../__generated__/pageFragment.graphql";
+import type { pageQuery } from "../__generated__/pageQuery.graphql";
+import { FilmDirector } from "./FilmDirector";
 
 export default async function Home() {
   const data = await getStreamableQuery<pageQuery>(

@@ -1,18 +1,19 @@
 "use client";
 
-import { createRelayEnvironment } from "../createRelayEnvironment";
-import { ReactNode, useMemo } from "react";
+import { ReactNode } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
+import { createRelayEnvironment } from "../createRelayEnvironment";
+
+// Is this dangerous during SSR?
+const clientComponentRelayEnvironment = createRelayEnvironment(typeof window !== "undefined");
 
 export function ClientRelayEnvironmentProvider({
   children,
 }: {
   children: ReactNode;
 }) {
-  const environment = useMemo(() => createRelayEnvironment(), []);
-
   return (
-    <RelayEnvironmentProvider environment={environment}>
+    <RelayEnvironmentProvider environment={clientComponentRelayEnvironment}>
       {children}
     </RelayEnvironmentProvider>
   );

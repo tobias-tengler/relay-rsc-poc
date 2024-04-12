@@ -32,7 +32,7 @@ export const createRelayEnvironment = (isClient?: boolean) => {
   const store = new Store(new RecordSource());
 
   const environment = new EnvironmentWithReplay({
-    isServer: true,
+    isServer: !isClient,
     network,
     store,
     // ... other options

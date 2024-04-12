@@ -5,6 +5,7 @@ const nextConfig = {
   compiler: {
     relay: relayConfig
   },
+  reactStrictMode: false
 };
 
 export default nextConfig;
