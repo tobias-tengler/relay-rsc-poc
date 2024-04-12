@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<2c9191c6855c266d9eee72b351646851>>
+ * @generated SignedSource<<155a19c67e481c5e90142c9da76ac9ed>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -10,20 +10,20 @@
 
 import { Fragment, ReaderFragment } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
-export type pageDirectorFragment$data = {
+export type FilmDirectorFragment$data = {
   readonly director: string | null | undefined;
-  readonly " $fragmentType": "pageDirectorFragment";
+  readonly " $fragmentType": "FilmDirectorFragment";
 };
-export type pageDirectorFragment$key = {
-  readonly " $data"?: pageDirectorFragment$data;
-  readonly " $fragmentSpreads": FragmentRefs<"pageDirectorFragment">;
+export type FilmDirectorFragment$key = {
+  readonly " $data"?: FilmDirectorFragment$data;
+  readonly " $fragmentSpreads": FragmentRefs<"FilmDirectorFragment">;
 };
 
 const node: ReaderFragment = {
   "argumentDefinitions": [],
   "kind": "Fragment",
   "metadata": null,
-  "name": "pageDirectorFragment",
+  "name": "FilmDirectorFragment",
   "selections": [
     {
       "alias": null,
@@ -37,6 +37,6 @@ const node: ReaderFragment = {
   "abstractKey": null
 };
 
-(node as any).hash = "bc7b346534becac4cb2ccae9116da0e1";
+(node as any).hash = "3c9e6b3f9153292ca85b7bccb968877f";
 
 export default node;

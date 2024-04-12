@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ClientRelayEnvironmentProvider } from "@/app/ClientRelayEnvironmentProvider";
+import { ClientRelayEnvironmentProvider } from "./ClientRelayEnvironmentProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 

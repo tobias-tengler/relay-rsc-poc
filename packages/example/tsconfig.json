@@ -18,7 +18,6 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
       // TODO: Find better approach
       "relay-rsc/createRelayEnvironment": ["./src/createRelayEnvironment.ts"]
     }

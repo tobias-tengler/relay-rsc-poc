@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<ffb890d60cd5da105092cc1feb7a3e9c>>
+ * @generated SignedSource<<baee688a3cf8d2f0d5bc2a976297f4e1>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type pageQuery$data = {
   readonly allFilms: {
     readonly films: ReadonlyArray<{
       readonly id: string;
-      readonly " $fragmentSpreads": FragmentRefs<"pageDirectorFragment" | "pageFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"FilmDirectorFragment" | "pageFragment">;
     } | null | undefined> | null | undefined;
   } | null | undefined;
 };
@@ -64,7 +64,7 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "pageDirectorFragment"
+                "name": "FilmDirectorFragment"
               }
             ],
             "storageKey": null
@@ -122,16 +122,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "006ee1f799d52700c8dbe3c39534cd27",
+    "cacheID": "a451ab7616caecc052a26558795d229f",
     "id": null,
     "metadata": {},
     "name": "pageQuery",
     "operationKind": "query",
-    "text": "query pageQuery {\n  allFilms {\n    films {\n      id\n      ...pageFragment\n      ...pageDirectorFragment\n    }\n  }\n}\n\nfragment pageDirectorFragment on Film {\n  director\n}\n\nfragment pageFragment on Film {\n  title\n}\n"
+    "text": "query pageQuery {\n  allFilms {\n    films {\n      id\n      ...pageFragment\n      ...FilmDirectorFragment\n    }\n  }\n}\n\nfragment FilmDirectorFragment on Film {\n  director\n}\n\nfragment pageFragment on Film {\n  title\n}\n"
   }
 };
 })();
 
-(node as any).hash = "f7d0b934a541a9e4c0c122a88ff102cf";
+(node as any).hash = "6efcb83c8c788d9d58222d96f74c0ee1";
 
 export default node;

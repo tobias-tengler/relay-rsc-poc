@@ -1,17 +1,17 @@
 "use client";
 
-import { pageDirectorFragment$key } from "@/__generated__/pageDirectorFragment.graphql";
+import { type FilmDirectorFragment$key } from "../__generated__/FilmDirectorFragment.graphql";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
 export function FilmDirector({
   filmKey,
 }: {
-  filmKey: pageDirectorFragment$key;
+  filmKey: FilmDirectorFragment$key;
 }) {
   const film = useFragment(
     graphql`
-      fragment pageDirectorFragment on Film {
+      fragment FilmDirectorFragment on Film {
         director
       }
     `,

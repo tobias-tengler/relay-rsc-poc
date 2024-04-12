@@ -1,6 +1,6 @@
 "use client";
 
-import { createRelayEnvironment } from "@/createRelayEnvironment";
+import { createRelayEnvironment } from "../createRelayEnvironment";
 import { ReactNode, useMemo } from "react";
 import { RelayEnvironmentProvider } from "react-relay";
 

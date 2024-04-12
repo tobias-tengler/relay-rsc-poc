@@ -1,9 +1,9 @@
-import relayConfig from "./relay.config.json" with { type: "json"};
+import relayConfig from "./relay.config.json" assert { type: "json" };
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compiler: {
-    relay: relayConfig,
+    relay: relayConfig
   },
 };
 
