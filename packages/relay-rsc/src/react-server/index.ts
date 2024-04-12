@@ -7,7 +7,6 @@ import {
 import { cache } from "react";
 import { getRelayEnvironment } from "relay-rsc/getRelayEnvironment";
 import {
-  Environment,
   FetchFunction,
   GraphQLResponse,
   Network,
@@ -18,7 +17,6 @@ import {
   getRequest,
 } from "relay-runtime";
 import { readFragment } from "./newRelayApis";
-import { execute } from "relay-runtime/lib/store/RelayModernQueryExecutor";
 import { RelayObservable } from "relay-runtime/lib/network/RelayObservable";
 
 const getRelayRscEnvironment = cache(getRelayEnvironment);
