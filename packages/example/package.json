@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build": "pnpm run build:relay-rsc && pnpm run build:example",
+    "build:example": "next build",
+    "build:relay-rsc": "pnpm run --filter relay-rsc build"
   },
   "dependencies": {
     "react": "^18",
