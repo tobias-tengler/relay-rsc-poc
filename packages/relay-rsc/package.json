@@ -4,8 +4,8 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "build": "tsup ./src --format esm --dts --out-dir ./dist",
-    "watch": "tsup ./src --format esm --dts --out-dir ./dist --watch"
+    "build": "tsup",
+    "watch": "tsup --watch"
   },
   "keywords": [],
   "author": "",
@@ -16,12 +16,26 @@
   },
   "devDependencies": {
     "tsup": "8.0.2",
-    "typescript": "5.4.5"
+    "typescript": "5.4.5",
+    "@types/react-relay": "16.0.6",
+    "@types/relay-runtime": "14.1.23",
+    "@types/react": "18.2.77"
   },
   "exports": {
     ".": {
       "react-server": "./dist/react-server/index.js",
       "default": "./dist/react-client/index.js"
+    },
+    "./getRelayEnvironment": "./dist/react-server/getRelayEnvironment.js"
+  },
+  "typesVersions": {
+    "*": {
+      "./getRelayEnvironment": [
+        "./dist/react-server/getRelayEnvironment.d.ts"
+      ],
+      "*": [
+        "./dist/react-server/index.d.ts"
+      ]
     }
   }
 }

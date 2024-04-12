@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "Bundler",
+    "module": "ESNext",
+    "paths": {
+      "relay-rsc/*": ["./*"]
+    }
+  }
+}
