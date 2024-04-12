@@ -7,7 +7,7 @@ const fetchQuery: FetchFunction = (
   operation,
   variables,
   cacheConfig,
-  uploadables
+  uploadables,
 ) => {
   console.log("execute", operation.name);
 

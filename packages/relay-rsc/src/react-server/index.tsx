@@ -42,7 +42,7 @@ export function StreamedHydration({
 }: StreamHydrationProps) {
   const hydrationMetadata = useMemo(
     () => responses.map((response) => response[rscStreamingMetaDataSymbol]),
-    [responses]
+    [responses],
   );
 
   return (
@@ -57,7 +57,7 @@ export function StreamedHydration({
  */
 export async function getStreamableQuery<TOperation extends OperationType>(
   gqlQuery: GraphQLTaggedNode,
-  variables: VariablesOf<TOperation>
+  variables: VariablesOf<TOperation>,
 ): Promise<
   TOperation["response"] & { [rscStreamingMetaDataSymbol]: HydrationMetadata }
 > {
@@ -79,7 +79,7 @@ export async function getStreamableQuery<TOperation extends OperationType>(
         variables,
         stream: streamToPromiseChain(observable),
       },
-    })
+    }),
   );
 }
 

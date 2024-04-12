@@ -13,7 +13,7 @@ export type PromiseChain = Promise<{
  * This function converts a realy stream into a serializable promise chain.
  */
 export function streamToPromiseChain(
-  observable: RelayObservable<GraphQLResponse>
+  observable: RelayObservable<GraphQLResponse>,
 ): PromiseChain {
   let resolve, reject;
 
@@ -80,6 +80,6 @@ export function promiseChainToStream(stream: PromiseChain) {
 
   // Replay all responses to the observable that is returned to Relay.
   return Observable.create<GraphQLResponse>((sink) =>
-    replaySubject.subscribe(sink)
+    replaySubject.subscribe(sink),
   );
 }

@@ -28,7 +28,7 @@ export const getStreamableQuery: typeof import("../react-server").getStreamableQ
 export class NetworkWithReplay {
   static create(
     fetchFn: FetchFunction,
-    subscribeFn?: SubscribeFunction
+    subscribeFn?: SubscribeFunction,
   ): ReturnType<typeof Network.create> {
     const replayMap = new Map<RequestParameters, Map<string, PromiseChain>>();
 
@@ -69,7 +69,7 @@ export class NetworkWithReplay {
 
 export class EnvironmentWithReplay extends Environment {
   constructor(
-    config: Omit<EnvironmentConfig, "network"> & { network: NetworkWithReplay }
+    config: Omit<EnvironmentConfig, "network"> & { network: NetworkWithReplay },
   ) {
     super(config as EnvironmentConfig);
 
