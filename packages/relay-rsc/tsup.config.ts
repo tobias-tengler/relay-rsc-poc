@@ -8,14 +8,24 @@ export default defineConfig([
     dts: true,
   },
   {
-    entry: ["src/react-server/index.ts"],
+    entry: ["src/react-server/index.tsx"],
     outDir: "dist/react-server",
     format: "esm",
     dts: true,
-    external: ["relay-rsc"],
+    external: [
+      "relay-rsc",
+      // Without the external it would remove the "use client" and inline the definition.
+      "../react-client/StreamedHydrationClient.tsx",
+    ],
   },
   {
-    entry: ["src/react-client/index.ts"],
+    entry: ["src/react-client/index.tsx"],
+    outDir: "dist/react-client",
+    format: "esm",
+    dts: true,
+  },
+  {
+    entry: ["src/react-client/StreamedHydrationClient.tsx"],
     outDir: "dist/react-client",
     format: "esm",
     dts: true,

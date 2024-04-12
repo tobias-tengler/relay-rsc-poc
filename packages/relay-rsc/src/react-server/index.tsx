@@ -1,5 +1,5 @@
 /// <reference types="react/experimental" />
-import { cache } from "react";
+import { ReactNode, cache, useMemo } from "react";
 import {
   GraphQLTaggedNode,
   type useFragment as useRelayFragment,
@@ -13,6 +13,12 @@ import {
 } from "relay-runtime";
 import { readFragment } from "./newRelayApis";
 import { streamToPromiseChain } from "./toPromiseChain";
+import { rscStreamingMetaDataSymbol } from "../symbols";
+import {
+  type StreamedHydrationClientProps,
+  StreamHydrationClient,
+  type HydrationMetadata,
+} from "../react-client/StreamedHydrationClient";
 
 // Replay is only necessary for client components
 // therefore we export the original Network from relay-runtime
@@ -22,14 +28,26 @@ export { Network as NetworkWithReplay } from "relay-runtime";
 // For convenience we cache the environment for the user
 const getRelayEnvironment = cache(createRelayEnvironment);
 
-/**
- * To pickup the stream in client components internally the return value
- * of getStreamableQuery has to be extended by
- *  - the original gqlQuery
- *  - the original variables
- *  - the stream of the response
- */
-const rscStreamingMetaDataSymbol = Symbol.for("RSC-Stream");
+type StreamHydrationProps = {
+  responses: { [rscStreamingMetaDataSymbol]: HydrationMetadata }[];
+  children: ReactNode;
+};
+
+export function StreamedHydration({
+  responses,
+  children,
+}: StreamHydrationProps) {
+  const hydrationMetadata = useMemo(
+    () => responses.map((response) => response[rscStreamingMetaDataSymbol]),
+    [responses]
+  );
+
+  return (
+    <StreamHydrationClient hydrationMetadata={hydrationMetadata}>
+      {children}
+    </StreamHydrationClient>
+  );
+}
 
 /**
  * Similar to getSeriealizableQuery but with Streaming Support
@@ -37,7 +55,9 @@ const rscStreamingMetaDataSymbol = Symbol.for("RSC-Stream");
 export async function getStreamableQuery<TOperation extends OperationType>(
   gqlQuery: GraphQLTaggedNode,
   variables: VariablesOf<TOperation>
-): Promise<TOperation["response"]> {
+): Promise<
+  TOperation["response"] & { [rscStreamingMetaDataSymbol]: HydrationMetadata }
+> {
   const environment = getRelayEnvironment();
   const request = getRequest(gqlQuery);
 
@@ -49,13 +69,15 @@ export async function getStreamableQuery<TOperation extends OperationType>(
 
   const unfrozenData = structuredClone(data);
 
-  unfrozenData[rscStreamingMetaDataSymbol] = {
-    gqlQuery,
-    variables,
-    stream: streamToPromiseChain(observable),
-  };
-
-  return Object.freeze(unfrozenData);
+  return Object.freeze(
+    Object.assign(unfrozenData, {
+      [rscStreamingMetaDataSymbol]: {
+        gqlQuery: (gqlQuery as any).default,
+        variables,
+        stream: streamToPromiseChain(observable),
+      },
+    })
+  );
 }
 
 /**

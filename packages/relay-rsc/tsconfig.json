@@ -5,6 +5,7 @@
     "target": "ES2015",
     "paths": {
       "relay-rsc/*": ["./*"]
-    }
+    },
+    "jsx": "react-jsx"
   }
 }
