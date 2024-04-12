@@ -1,3 +1,7 @@
+//
+// Most of this code was copy pasted from internal relay code
+// it would be very helpful if an official API was provided for this
+//
 import { useMemo } from "react";
 import { KeyTypeData, KeyType } from "react-relay/relay-hooks/helpers";
 import {

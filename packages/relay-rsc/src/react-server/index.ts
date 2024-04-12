@@ -1,34 +1,44 @@
 /// <reference types="react/experimental" />
-
+import { cache } from "react";
 import {
   GraphQLTaggedNode,
   type useFragment as useRelayFragment,
 } from "react-relay";
-import { cache } from "react";
 import { getRelayEnvironment } from "relay-rsc/getRelayEnvironment";
 import {
-  FetchFunction,
-  GraphQLResponse,
-  Network,
   OperationType,
-  SubscribeFunction,
   VariablesOf,
   fetchQuery,
-  getRequest,
+  getRequest
 } from "relay-runtime";
 import { readFragment } from "./newRelayApis";
-import { RelayObservable } from "relay-runtime/lib/network/RelayObservable";
+import { streamToPromiseChain } from "./toPromiseChain";
 
+// Replay is only necessary for client components 
+// therefore we export the original Network from relay-runtime
+// for server components
+export { Network as NetworkWithReplay } from "relay-runtime";
+
+// For convenience we cache the environment for the user
 const getRelayRscEnvironment = cache(getRelayEnvironment);
 
-const symbol = Symbol.for("@@");
+/** 
+ * To pickup the stream in client components internally the return value 
+ * of getStreamableQuery has to be extended by
+ *  - the original gqlQuery
+ *  - the original variables
+ *  - the stream of the response
+ */
+const rscStreamingMetaDataSymbol = Symbol.for("RSC-Stream");
 
+/**
+ * Similar to getSeriealizableQuery but with Streaming Support
+ */
 export async function getStreamableQuery<TOperation extends OperationType>(
   gqlQuery: GraphQLTaggedNode,
   variables: VariablesOf<TOperation>
 ): Promise<TOperation["response"]> {
   const environment = getRelayRscEnvironment();
-
   const request = getRequest(gqlQuery);
 
   const observable = environment
@@ -37,7 +47,7 @@ export async function getStreamableQuery<TOperation extends OperationType>(
 
   const data = await fetchQuery(environment, gqlQuery, variables).toPromise();
 
-  data[symbol] = {
+  data[rscStreamingMetaDataSymbol] = {
     gqlQuery,
     variables,
     stream: streamToPromiseChain(observable),
@@ -46,23 +56,14 @@ export async function getStreamableQuery<TOperation extends OperationType>(
   return data;
 }
 
-function streamToPromiseChain(observable: RelayObservable<GraphQLResponse>) {
-  // TODO: Implement this
-}
-
-const useRscFragment = (gqlQuery, fragmentRef) => {
+/**
+ * In React Server Components it is not possible to use useFragment directly
+ * as it relies on hooks. Therefore we need to read the fragment manually using
+ * the imaginary new Realy readFragment API.
+ */
+export const useFragment = ((gqlQuery, fragmentRef) => {
   const environment = getRelayRscEnvironment();
-
   return readFragment(gqlQuery, fragmentRef, environment);
-};
+}) as any as typeof useRelayFragment;
 
-export const useFragment = useRscFragment as any as typeof useRelayFragment;
 
-export class RscNetwork {
-  static create(
-    fetchFn: FetchFunction,
-    subscribeFn?: SubscribeFunction
-  ): ReturnType<typeof Network.create> {
-    return Network.create(fetchFn, subscribeFn);
-  }
-}
