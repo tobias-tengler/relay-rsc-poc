@@ -15,7 +15,7 @@ export default defineConfig([
     external: [
       "relay-rsc",
       // Without the external it would remove the "use client" and inline the definition.
-      "../react-client/StreamedHydrationClient.tsx",
+      "../react-client/StreamedHydrationClient",
     ],
   },
   {

@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<919d366f7e77ffbebfd37c202b2b3f9b>>
+ * @generated SignedSource<<ffb890d60cd5da105092cc1feb7a3e9c>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -15,7 +15,7 @@ export type pageQuery$data = {
   readonly allFilms: {
     readonly films: ReadonlyArray<{
       readonly id: string;
-      readonly " $fragmentSpreads": FragmentRefs<"pageFragment">;
+      readonly " $fragmentSpreads": FragmentRefs<"pageDirectorFragment" | "pageFragment">;
     } | null | undefined> | null | undefined;
   } | null | undefined;
 };
@@ -60,6 +60,11 @@ return {
                 "args": null,
                 "kind": "FragmentSpread",
                 "name": "pageFragment"
+              },
+              {
+                "args": null,
+                "kind": "FragmentSpread",
+                "name": "pageDirectorFragment"
               }
             ],
             "storageKey": null
@@ -100,6 +105,13 @@ return {
                 "kind": "ScalarField",
                 "name": "title",
                 "storageKey": null
+              },
+              {
+                "alias": null,
+                "args": null,
+                "kind": "ScalarField",
+                "name": "director",
+                "storageKey": null
               }
             ],
             "storageKey": null
@@ -110,16 +122,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "cd1514b960f410386e0d918dae797a2c",
+    "cacheID": "006ee1f799d52700c8dbe3c39534cd27",
     "id": null,
     "metadata": {},
     "name": "pageQuery",
     "operationKind": "query",
-    "text": "query pageQuery {\n  allFilms {\n    films {\n      id\n      ...pageFragment\n    }\n  }\n}\n\nfragment pageFragment on Film {\n  title\n}\n"
+    "text": "query pageQuery {\n  allFilms {\n    films {\n      id\n      ...pageFragment\n      ...pageDirectorFragment\n    }\n  }\n}\n\nfragment pageDirectorFragment on Film {\n  director\n}\n\nfragment pageFragment on Film {\n  title\n}\n"
   }
 };
 })();
 
-(node as any).hash = "71b33ec3be5b296e2b1d9ae1278bce45";
+(node as any).hash = "f7d0b934a541a9e4c0c122a88ff102cf";
 
 export default node;

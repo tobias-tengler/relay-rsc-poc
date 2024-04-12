@@ -1,9 +1,9 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { type PromiseChain } from "../react-server/toPromiseChain";
-import { rscStreamingMetaDataSymbol } from "../symbols";
-import { GraphQLTaggedNode } from "relay-runtime";
+import { type GraphQLTaggedNode } from "relay-runtime";
+import { useLazyLoadQuery } from "react-relay";
 
 export type HydrationMetadata = {
   gqlQuery: GraphQLTaggedNode;
@@ -20,5 +20,26 @@ export function StreamHydrationClient({
   hydrationMetadata,
   children,
 }: StreamedHydrationClientProps) {
-  return <>{children}</>;
+  return (
+    <>
+      {hydrationMetadata.map((metadata, index) => (
+        <Suspense key={index} fallback={null}>
+          <QueryHydrationReplayer hydrationMetadata={metadata} />
+        </Suspense>
+      ))}
+      {children}
+    </>
+  );
+}
+
+function QueryHydrationReplayer({
+  hydrationMetadata,
+}: {
+  hydrationMetadata: HydrationMetadata;
+}) {
+  const { gqlQuery, variables, stream } = hydrationMetadata;
+
+  useLazyLoadQuery(gqlQuery, variables);
+
+  return null;
 }
