@@ -12,9 +12,9 @@ const fetchQuery: FetchFunction = (
   operation,
   variables,
   cacheConfig,
-  uploadables,
+  uploadables
 ) => {
-  return fetch("/graphql", {
+  return fetch("https://swapi-graphql.netlify.app/.netlify/functions/index", {
     method: "POST",
     headers: {
       // Add authentication and other headers here

@@ -36,7 +36,7 @@ const rscStreamingMetaDataSymbol = Symbol.for("RSC-Stream");
  */
 export async function getStreamableQuery<TOperation extends OperationType>(
   gqlQuery: GraphQLTaggedNode,
-  variables: VariablesOf<TOperation>,
+  variables: VariablesOf<TOperation>
 ): Promise<TOperation["response"]> {
   const environment = getRelayEnvironment();
   const request = getRequest(gqlQuery);
@@ -47,13 +47,15 @@ export async function getStreamableQuery<TOperation extends OperationType>(
 
   const data = await fetchQuery(environment, gqlQuery, variables).toPromise();
 
-  data[rscStreamingMetaDataSymbol] = {
+  const unfrozenData = structuredClone(data);
+
+  unfrozenData[rscStreamingMetaDataSymbol] = {
     gqlQuery,
     variables,
     stream: streamToPromiseChain(observable),
   };
 
-  return data;
+  return Object.freeze(unfrozenData);
 }
 
 /**
