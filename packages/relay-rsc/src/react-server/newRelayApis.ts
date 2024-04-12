@@ -17,7 +17,7 @@ import {
 } from "relay-runtime";
 
 function isPluralReaderSelector(
-  selector: ReaderSelector
+  selector: ReaderSelector,
 ): selector is PluralReaderSelector {
   return selector.kind === "PluralReaderSelector";
 }
@@ -28,7 +28,7 @@ function isPluralReaderSelector(
 export function readFragment<TKey extends KeyType>(
   gqlFragment: GraphQLTaggedNode,
   fragmentRef: TKey,
-  environment: IEnvironment
+  environment: IEnvironment,
 ): KeyTypeData<TKey> {
   const fragmentNode = getFragment(gqlFragment);
   const fragmentSelector = getSelector(fragmentNode, fragmentRef);
@@ -43,7 +43,7 @@ export function readFragment<TKey extends KeyType>(
     const pendingOperationsResult = getPendingOperationsForFragment(
       environment,
       fragmentNode,
-      fragmentOwner
+      fragmentOwner,
     );
     if (pendingOperationsResult) {
       throw pendingOperationsResult.promise;
@@ -94,7 +94,7 @@ type FragmentState =
 
 function getFragmentState(
   environment: IEnvironment,
-  fragmentSelector: ReaderSelector
+  fragmentSelector: ReaderSelector,
 ): FragmentState {
   if (fragmentSelector == null) {
     return { kind: "bailout" };

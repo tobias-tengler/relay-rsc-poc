@@ -30,12 +30,12 @@
       "react-server": "./dist/react-server/index.js",
       "default": "./dist/react-client/index.js"
     },
-    "./getRelayEnvironment": "./dist/react-server/getRelayEnvironment.js"
+    "./createRelayEnvironment": "./dist/react-server/createRelayEnvironment.js"
   },
   "typesVersions": {
     "*": {
-      "./getRelayEnvironment": [
-        "./dist/react-server/getRelayEnvironment.d.ts"
+      "./createRelayEnvironment": [
+        "./dist/react-server/createRelayEnvironment.d.ts"
       ],
       "*": [
         "./dist/react-server/index.d.ts"

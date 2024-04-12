@@ -4,26 +4,26 @@ import {
   GraphQLTaggedNode,
   type useFragment as useRelayFragment,
 } from "react-relay";
-import { getRelayEnvironment } from "relay-rsc/getRelayEnvironment";
+import { createRelayEnvironment } from "relay-rsc/createRelayEnvironment";
 import {
   OperationType,
   VariablesOf,
   fetchQuery,
-  getRequest
+  getRequest,
 } from "relay-runtime";
 import { readFragment } from "./newRelayApis";
 import { streamToPromiseChain } from "./toPromiseChain";
 
-// Replay is only necessary for client components 
+// Replay is only necessary for client components
 // therefore we export the original Network from relay-runtime
 // for server components
 export { Network as NetworkWithReplay } from "relay-runtime";
 
 // For convenience we cache the environment for the user
-const getRelayRscEnvironment = cache(getRelayEnvironment);
+const getRelayEnvironment = cache(createRelayEnvironment);
 
-/** 
- * To pickup the stream in client components internally the return value 
+/**
+ * To pickup the stream in client components internally the return value
  * of getStreamableQuery has to be extended by
  *  - the original gqlQuery
  *  - the original variables
@@ -36,9 +36,9 @@ const rscStreamingMetaDataSymbol = Symbol.for("RSC-Stream");
  */
 export async function getStreamableQuery<TOperation extends OperationType>(
   gqlQuery: GraphQLTaggedNode,
-  variables: VariablesOf<TOperation>
+  variables: VariablesOf<TOperation>,
 ): Promise<TOperation["response"]> {
-  const environment = getRelayRscEnvironment();
+  const environment = getRelayEnvironment();
   const request = getRequest(gqlQuery);
 
   const observable = environment
@@ -62,8 +62,6 @@ export async function getStreamableQuery<TOperation extends OperationType>(
  * the imaginary new Realy readFragment API.
  */
 export const useFragment = ((gqlQuery, fragmentRef) => {
-  const environment = getRelayRscEnvironment();
+  const environment = getRelayEnvironment();
   return readFragment(gqlQuery, fragmentRef, environment);
 }) as any as typeof useRelayFragment;
-
-

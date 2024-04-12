@@ -2,7 +2,7 @@ import { defineConfig } from "tsup";
 
 export default defineConfig([
   {
-    entry: ["src/react-server/getRelayEnvironment.ts"],
+    entry: ["src/react-server/createRelayEnvironment.ts"],
     outDir: "dist/react-server",
     format: "esm",
     dts: true,

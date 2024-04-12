@@ -11,7 +11,7 @@ export { useFragment } from "react-relay";
 
 export async function getStreamableQuery<TOperation extends OperationType>(
   gqlQuery: GraphQLTaggedNode,
-  variables: VariablesOf<TOperation>
+  variables: VariablesOf<TOperation>,
 ): Promise<TOperation["response"]> {
   throw new Error("Only in RSC");
 }
@@ -19,7 +19,7 @@ export async function getStreamableQuery<TOperation extends OperationType>(
 export class RscNetwork {
   static create(
     fetchFn: FetchFunction,
-    subscribeFn?: SubscribeFunction
+    subscribeFn?: SubscribeFunction,
   ): ReturnType<typeof Network.create> {
     return Network.create(fetchFn, subscribeFn);
   }
