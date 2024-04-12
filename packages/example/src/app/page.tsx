@@ -1,8 +1,11 @@
 import Image from "next/image";
 import { useFragment } from "relay-rsc";
+import { getStreamableQuery } from "relay-rsc";
 
 export default function Home() {
-  useFragment(null, null);
+  const data = getStreamableQuery(null, {});
+
+  useFragment(null, data);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
