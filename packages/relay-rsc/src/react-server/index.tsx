@@ -12,7 +12,7 @@ import {
   getRequest,
 } from "relay-runtime";
 import { readFragment } from "./newRelayApis";
-import { streamToPromiseChain } from "./toPromiseChain";
+import { streamToPromiseChain } from "../toPromiseChain";
 import { rscStreamingMetaDataSymbol } from "../symbols";
 import {
   type StreamedHydrationClientProps,
@@ -23,7 +23,10 @@ import {
 // Replay is only necessary for client components
 // therefore we export the original Network from relay-runtime
 // for server components
-export { Network as NetworkWithReplay } from "relay-runtime";
+export {
+  Network as NetworkWithReplay,
+  Environment as EnvironmentWithReplay,
+} from "relay-runtime";
 
 // For convenience we cache the environment for the user
 const getRelayEnvironment = cache(createRelayEnvironment);

@@ -1,9 +1,9 @@
 "use client";
 
-import { ReactNode, Suspense } from "react";
-import { type PromiseChain } from "../react-server/toPromiseChain";
+import { ReactNode, Suspense, useMemo } from "react";
+import { type PromiseChain } from "../toPromiseChain";
 import { type GraphQLTaggedNode } from "relay-runtime";
-import { useLazyLoadQuery } from "react-relay";
+import { useLazyLoadQuery, useRelayEnvironment } from "react-relay";
 
 export type HydrationMetadata = {
   gqlQuery: GraphQLTaggedNode;
@@ -20,15 +20,36 @@ export function StreamHydrationClient({
   hydrationMetadata,
   children,
 }: StreamedHydrationClientProps) {
+  console.log("start hydrating");
   return (
     <>
       {hydrationMetadata.map((metadata, index) => (
-        <Suspense key={index} fallback={null}>
-          <QueryHydrationReplayer hydrationMetadata={metadata} />
-        </Suspense>
+        <QueryHydrationInitializer key={index} hydrationMetadata={metadata} />
       ))}
       {children}
     </>
+  );
+}
+
+function QueryHydrationInitializer({
+  hydrationMetadata,
+}: {
+  hydrationMetadata: HydrationMetadata;
+}) {
+  const environment = useRelayEnvironment();
+  const network = environment.getNetwork();
+
+  useMemo(() => {
+    console.log("replay");
+    // TODO
+    // @ts-expect-error
+    network.replay(hydrationMetadata);
+  }, [hydrationMetadata, network]);
+
+  return (
+    <Suspense fallback={null}>
+      <QueryHydrationReplayer hydrationMetadata={hydrationMetadata} />
+    </Suspense>
   );
 }
 
@@ -37,7 +58,7 @@ function QueryHydrationReplayer({
 }: {
   hydrationMetadata: HydrationMetadata;
 }) {
-  const { gqlQuery, variables, stream } = hydrationMetadata;
+  const { gqlQuery, variables } = hydrationMetadata;
 
   useLazyLoadQuery(gqlQuery, variables);
 

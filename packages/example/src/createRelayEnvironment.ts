@@ -1,10 +1,5 @@
-import {
-  Environment,
-  FetchFunction,
-  Network,
-  RecordSource,
-  Store,
-} from "relay-runtime";
+import { EnvironmentWithReplay, NetworkWithReplay } from "relay-rsc";
+import { FetchFunction, RecordSource, Store } from "relay-runtime";
 
 // Define a function that fetches the results of an operation (query/mutation/etc)
 // and returns its results as a Promise:
@@ -14,6 +9,8 @@ const fetchQuery: FetchFunction = (
   cacheConfig,
   uploadables
 ) => {
+  console.log("execute", operation.name);
+
   return fetch("https://swapi-graphql.netlify.app/.netlify/functions/index", {
     method: "POST",
     headers: {
@@ -29,14 +26,17 @@ const fetchQuery: FetchFunction = (
   });
 };
 
-export const createRelayEnvironment = () => {
+export const createRelayEnvironment = (isClient?: boolean) => {
   // Create a network layer from the fetch function
-  const network = Network.create(fetchQuery);
+  const network = NetworkWithReplay.create(fetchQuery);
   const store = new Store(new RecordSource());
 
-  return new Environment({
+  const environment = new EnvironmentWithReplay({
+    isServer: true,
     network,
     store,
     // ... other options
   });
+
+  return environment;
 };
