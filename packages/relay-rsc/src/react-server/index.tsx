@@ -76,11 +76,19 @@ export async function getStreamableQuery<TOperation extends OperationType>(
   const environment = getRelayEnvironment();
   const request = getRequest(gqlQuery);
 
+  // TODO:
+  // Right now the request is executed twice
+  //
+  // Instead it would probably be possible to use __internal.fetchQueryDeduped from "relay-runtime/lib" as it would give access to:
+  // - the raw response
+  // - the RelayObservable for the response (the masked data)
+  // see
+  // https://github.com/facebook/relay/blob/7b69061a6bce3bad53ee2b024627ad7cfa132a1d/packages/relay-runtime/query/fetchQuery.js#L172
+  // https://github.com/facebook/relay/blob/7b69061a6bce3bad53ee2b024627ad7cfa132a1d/packages/relay-runtime/query/fetchQueryInternal.js#L103
+
   const observable = environment
     .getNetwork()
     .execute(request.params, variables, {});
-
-  
 
   const data = await fetchQuery(environment, gqlQuery, variables).toPromise();
   const unfrozenData = structuredClone(data);
