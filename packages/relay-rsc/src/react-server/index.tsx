@@ -11,21 +11,23 @@ import {
   fetchQuery,
   getRequest,
 } from "relay-runtime";
-import { readFragment } from "./newRelayApis";
-import { streamToPromiseChain } from "../toPromiseChain";
-import { rscStreamingMetaDataSymbol } from "../symbols";
 import {
-  type StreamedHydrationClientProps,
   StreamHydrationClient,
   type HydrationMetadata,
 } from "../react-client/StreamedHydrationClient";
+import { rscStreamingMetaDataSymbol } from "../symbols";
+import { streamToPromiseChain } from "../toPromiseChain";
+import { readFragment } from "./newRelayApis";
 
 // Replay is only necessary for client components
 // therefore we export the original Network from relay-runtime
 // for server components
+//
+// This is rather a workaround - a better solution would be to
+// to have a network replay API in relay-runtime
 export {
-  Network as NetworkWithReplay,
   Environment as EnvironmentWithReplay,
+  Network as NetworkWithReplay,
 } from "relay-runtime";
 
 // For convenience we cache the environment for the user
@@ -36,15 +38,25 @@ type StreamHydrationProps = {
   children: ReactNode;
 };
 
+/**
+ * StreamedHydration must only be used in React Server Components
+ * It will stream the data from the server to the client components
+ * and trigger the relay store hydration
+ */
 export function StreamedHydration({
   responses,
   children,
 }: StreamHydrationProps) {
+  // The HydrationMetadata is attached to the root query response
+  // for each streamed query
+  // This is easier for the developer, as they can decide for each
+  // query if they want to stream the responds data to the Client Components world
+  //
+  // To save bandwidth the meta data is extracted before it is serialized
   const hydrationMetadata = useMemo(
     () => responses.map((response) => response[rscStreamingMetaDataSymbol]),
     [responses],
   );
-
   return (
     <StreamHydrationClient hydrationMetadata={hydrationMetadata}>
       {children}
@@ -68,10 +80,10 @@ export async function getStreamableQuery<TOperation extends OperationType>(
     .getNetwork()
     .execute(request.params, variables, {});
 
+  
+
   const data = await fetchQuery(environment, gqlQuery, variables).toPromise();
-
   const unfrozenData = structuredClone(data);
-
   return Object.freeze(
     Object.assign(unfrozenData, {
       [rscStreamingMetaDataSymbol]: {

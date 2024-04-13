@@ -15,37 +15,44 @@ export type PromiseChain = Promise<{
 export function streamToPromiseChain(
   observable: RelayObservable<GraphQLResponse>,
 ): PromiseChain {
-  let resolve, reject;
+  let resolveNextChunk: (value: {
+      data: GraphQLResponse;
+      next: PromiseChain;
+    }) => void,
+    rejectNextChunk: (reason: any) => void;
 
-  const streamAsPromise: PromiseChain = new Promise((r, rr) => {
-    resolve = r;
-    reject = rr;
+  // Create a promise which will be resolved during the first do -> next call
+  const streamAsPromise: PromiseChain = new Promise((resolve, reject) => {
+    resolveNextChunk = resolve;
+    rejectNextChunk = reject;
   });
 
   observable
     .do({
       next: (data) => {
         console.log("next", data);
-        resolve({
+        resolveNextChunk({
           data,
-
           next:
             "hasNext" in data && data.hasNext
-              ? new Promise((r, rr) => {
-                  resolve = r;
-                  reject = rr;
+              ? // Create a further promise which will be resolved during the next do -> next call
+                new Promise((resolve, reject) => {
+                  resolveNextChunk = resolve;
+                  rejectNextChunk = reject;
                 })
               : null,
         });
       },
       complete: () => {
+        // Fallback if the stream is empty or hasNext is incorrect
         console.log("complete");
-        resolve();
+        resolveNextChunk(null);
       },
       error: (err) => {
-        reject(err);
+        rejectNextChunk(err);
       },
     })
+    // TODO: is this the correct way to start the stream?
     .toPromise();
 
   return streamAsPromise;
@@ -55,26 +62,24 @@ export function promiseChainToStream(stream: PromiseChain) {
   const replaySubject = new ReplaySubject();
 
   (async () => {
-    let promise = stream;
-
-    do {
-      const { data, next } = await promise;
-
-      console.log("next replay", data);
-
-      replaySubject.next(data);
-
-      if (!next) {
-        break;
-      }
-
-      promise = next;
-
-      // eslint-disable-next-line no-constant-condition
-    } while (true);
-
+    let next = stream;
+    let data: Awaited<PromiseChain>["data"];
+    try {
+      do {
+        // Wait for the next data chunk in the promise chain
+        // and replay it to the replay subject.
+        const streamChunk = await next;
+        data = streamChunk.data;
+        next = streamChunk.next;
+        console.log("next replay", data);
+        replaySubject.next(data);
+      } while (next);
+    } catch (err) {
+      console.error("error replay", err);
+      replaySubject.error(err);
+      return;
+    }
     console.log("complete replay");
-
     replaySubject.complete();
   })();
 
