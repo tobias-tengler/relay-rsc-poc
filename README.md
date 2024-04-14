@@ -25,3 +25,5 @@ With this approach, it is possible to start hydrating the Relay store on the cli
 This can potentially reduce the time to first byte and improve the perceived performance of the application.
 
 Especially with `@defer` and `@stream` directives, it is possible to start rendering the page with the initial data while the server is still fetching the rest of the data.
+
+[SSR vs SSR with Streaming](https://github.com/tobias-tengler/relay-rsc-poc/assets/4113649/363295b2-5297-47c5-a83b-968d715b9b2c)
