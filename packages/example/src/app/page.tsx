@@ -5,6 +5,9 @@ import type { pageQuery } from "../__generated__/pageQuery.graphql";
 import { FilmDirector } from "./FilmDirector";
 import { FilmTitle } from "./FilmTitle";
 
+// Without this the page would be cached and not revalidated
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const data = await getStreamableQuery<pageQuery>(
     graphql`
