@@ -33,7 +33,7 @@ export default async function Home() {
               <>
                 <FilmTitle filmKey={film} />
 
-                <Suspense key={film.id} fallback={<p>Loading director...</p>}>
+                <Suspense key={film.id} fallback={<div>🌀 Loading...</div>}>
                   <FilmDirector filmKey={film} />
                 </Suspense>
               </>
