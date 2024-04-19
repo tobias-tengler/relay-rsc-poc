@@ -7,9 +7,11 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "pnpm run --filter=relay-rsc build",
+    "build": "pnpm run -r build",
     "watch": "pnpm run --filter=relay-rsc watch",
-    "dev": "pnpm run --filter=example dev"
+    "dev": "pnpm run --filter=example dev",
+    "start": "pnpm run --filter=example start",
+    "relay": "pnpm run --filter=example relay"
   },
   "engines": {
     "node": ">=20",
