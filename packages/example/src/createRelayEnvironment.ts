@@ -1,33 +1,24 @@
 import { EnvironmentWithReplay, NetworkWithReplay } from "relay-rsc";
-import { FetchFunction, RecordSource, Store } from "relay-runtime";
+import {
+  FetchFunction,
+  GraphQLResponse,
+  Observable,
+  RecordSource,
+  RequestParameters,
+  Store,
+} from "relay-runtime";
+import { Sink } from "relay-runtime/lib/network/RelayObservable";
 
-// Define a function that fetches the results of an operation (query/mutation/etc)
-// and returns its results as a Promise:
-const fetchQuery: FetchFunction = (
-  operation,
-  variables,
-  cacheConfig,
-  uploadables,
-) => {
-  console.log("execute", operation.name);
-
-  return fetch("https://swapi-graphql.netlify.app/.netlify/functions/index", {
-    method: "POST",
-    headers: {
-      // Add authentication and other headers here
-      "content-type": "application/json",
-    },
-    body: JSON.stringify({
-      query: operation.text, // GraphQL text from input
-      variables,
-    }),
-  }).then((response) => {
-    return response.json();
+const fetchQuery: FetchFunction = (operation) => {
+  return Observable.create((sink) => {
+    (async () => {
+      console.log("execute network");
+      await __simulateDeferredResponse(operation, sink);
+    })();
   });
 };
 
 export const createRelayEnvironment = (isClient?: boolean) => {
-  // Create a network layer from the fetch function
   const network = NetworkWithReplay.create(fetchQuery);
   const store = new Store(new RecordSource());
 
@@ -35,8 +26,78 @@ export const createRelayEnvironment = (isClient?: boolean) => {
     isServer: !isClient,
     network,
     store,
-    // ... other options
   });
 
   return environment;
 };
+
+async function __simulateDeferredResponse(
+  operation: RequestParameters,
+  sink: Sink<GraphQLResponse>
+) {
+  await sleep(500);
+
+  // Send the initial response
+  sink.next({
+    data: {
+      films: [
+        {
+          id: "1",
+          title: "The Shawshank Redemption",
+        },
+        {
+          id: "2",
+          title: "The Godfather",
+        },
+        {
+          id: "3",
+          title: "The Dark Knight",
+        },
+      ],
+    },
+    // @ts-expect-error
+    hasNext: true,
+  });
+
+  await sleep(500);
+
+  sink.next({
+    data: {
+      director: "Frank Darabont",
+    },
+    path: ["films", 0],
+    label: "pageQuery$defer$FilmDirector",
+    // @ts-expect-error
+    hasNext: true,
+  });
+
+  await sleep(500);
+
+  sink.next({
+    data: {
+      director: "Francis Ford Coppola",
+    },
+    path: ["films", 1],
+    label: "pageQuery$defer$FilmDirector",
+    // @ts-expect-error
+    hasNext: true,
+  });
+
+  await sleep(500);
+
+  sink.next({
+    data: {
+      director: "Christopher Nolan",
+    },
+    path: ["films", 2],
+    label: "pageQuery$defer$FilmDirector",
+    // @ts-expect-error
+    hasNext: false,
+  });
+
+  sink.complete();
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

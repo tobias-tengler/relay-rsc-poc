@@ -1,23 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { type FilmDirectorFragment$key } from "../__generated__/FilmDirectorFragment.graphql";
+import { type FilmDirector$key } from "../__generated__/FilmDirector.graphql";
 import { useFragment } from "react-relay";
 import { graphql } from "relay-runtime";
 
-export function FilmDirector({
-  filmKey,
-}: {
-  filmKey: FilmDirectorFragment$key;
-}) {
+export function FilmDirector({ filmKey }: { filmKey: FilmDirector$key }) {
   const [color, setColor] = useState("purple");
   const film = useFragment(
     graphql`
-      fragment FilmDirectorFragment on Film {
+      fragment FilmDirector on Film {
         director
       }
     `,
-    filmKey,
+    filmKey
   );
 
   return (

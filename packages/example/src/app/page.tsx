@@ -1,24 +1,22 @@
 import { Fragment, Suspense } from "react";
 import { StreamedHydration, getStreamableQuery, useFragment } from "relay-rsc";
 import { graphql } from "relay-runtime";
-import type { pageFragment$key } from "../__generated__/pageFragment.graphql";
 import type { pageQuery } from "../__generated__/pageQuery.graphql";
 import { FilmDirector } from "./FilmDirector";
+import { FilmTitle } from "./FilmTitle";
 
 export default async function Home() {
   const data = await getStreamableQuery<pageQuery>(
     graphql`
       query pageQuery {
-        allFilms {
-          films {
-            id
-            ...pageFragment
-            ...FilmDirectorFragment
-          }
+        films {
+          id
+          ...FilmTitle
+          ...FilmDirector @defer
         }
       }
     `,
-    {},
+    {}
   );
 
   return (
@@ -26,29 +24,19 @@ export default async function Home() {
       <main>
         <h1>Films</h1>
 
-        {data.allFilms?.films?.map(
+        {data.films?.map(
           (film) =>
             film && (
-              <Suspense key={film.id}>
+              <>
                 <FilmTitle filmKey={film} />
-                <FilmDirector filmKey={film} />
-              </Suspense>
-            ),
+
+                <Suspense key={film.id} fallback={<p>Loading director...</p>}>
+                  <FilmDirector filmKey={film} />
+                </Suspense>
+              </>
+            )
         )}
       </main>
     </StreamedHydration>
   );
-}
-
-function FilmTitle({ filmKey }: { filmKey: pageFragment$key }) {
-  const film = useFragment(
-    graphql`
-      fragment pageFragment on Film {
-        title
-      }
-    `,
-    filmKey,
-  );
-
-  return <div>{film.title}</div>;
 }

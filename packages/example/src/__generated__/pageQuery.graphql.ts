@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<baee688a3cf8d2f0d5bc2a976297f4e1>>
+ * @generated SignedSource<<e3b63bf119830f194fd3baf082a167d5>>
  * @lightSyntaxTransform
  * @nogrep
  */
@@ -12,12 +12,10 @@ import { ConcreteRequest, Query } from 'relay-runtime';
 import { FragmentRefs } from "relay-runtime";
 export type pageQuery$variables = Record<PropertyKey, never>;
 export type pageQuery$data = {
-  readonly allFilms: {
-    readonly films: ReadonlyArray<{
-      readonly id: string;
-      readonly " $fragmentSpreads": FragmentRefs<"FilmDirectorFragment" | "pageFragment">;
-    } | null | undefined> | null | undefined;
-  } | null | undefined;
+  readonly films: ReadonlyArray<{
+    readonly id: string;
+    readonly " $fragmentSpreads": FragmentRefs<"FilmDirector" | "FilmTitle">;
+  }>;
 };
 export type pageQuery = {
   response: pageQuery$data;
@@ -42,38 +40,32 @@ return {
       {
         "alias": null,
         "args": null,
-        "concreteType": "FilmsConnection",
+        "concreteType": "Film",
         "kind": "LinkedField",
-        "name": "allFilms",
-        "plural": false,
+        "name": "films",
+        "plural": true,
         "selections": [
+          (v0/*: any*/),
           {
-            "alias": null,
             "args": null,
-            "concreteType": "Film",
-            "kind": "LinkedField",
-            "name": "films",
-            "plural": true,
+            "kind": "FragmentSpread",
+            "name": "FilmTitle"
+          },
+          {
+            "kind": "Defer",
             "selections": [
-              (v0/*: any*/),
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "pageFragment"
-              },
-              {
-                "args": null,
-                "kind": "FragmentSpread",
-                "name": "FilmDirectorFragment"
+                "name": "FilmDirector"
               }
-            ],
-            "storageKey": null
+            ]
           }
         ],
         "storageKey": null
       }
     ],
-    "type": "Root",
+    "type": "Query",
     "abstractKey": null
   },
   "kind": "Request",
@@ -85,27 +77,24 @@ return {
       {
         "alias": null,
         "args": null,
-        "concreteType": "FilmsConnection",
+        "concreteType": "Film",
         "kind": "LinkedField",
-        "name": "allFilms",
-        "plural": false,
+        "name": "films",
+        "plural": true,
         "selections": [
+          (v0/*: any*/),
           {
             "alias": null,
             "args": null,
-            "concreteType": "Film",
-            "kind": "LinkedField",
-            "name": "films",
-            "plural": true,
+            "kind": "ScalarField",
+            "name": "title",
+            "storageKey": null
+          },
+          {
+            "if": null,
+            "kind": "Defer",
+            "label": "pageQuery$defer$FilmDirector",
             "selections": [
-              (v0/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "title",
-                "storageKey": null
-              },
               {
                 "alias": null,
                 "args": null,
@@ -113,8 +102,7 @@ return {
                 "name": "director",
                 "storageKey": null
               }
-            ],
-            "storageKey": null
+            ]
           }
         ],
         "storageKey": null
@@ -122,16 +110,16 @@ return {
     ]
   },
   "params": {
-    "cacheID": "a451ab7616caecc052a26558795d229f",
+    "cacheID": "1c9cf2fa87dd3c66a162456f838816b2",
     "id": null,
     "metadata": {},
     "name": "pageQuery",
     "operationKind": "query",
-    "text": "query pageQuery {\n  allFilms {\n    films {\n      id\n      ...pageFragment\n      ...FilmDirectorFragment\n    }\n  }\n}\n\nfragment FilmDirectorFragment on Film {\n  director\n}\n\nfragment pageFragment on Film {\n  title\n}\n"
+    "text": "query pageQuery {\n  films {\n    id\n    ...FilmTitle\n    ...FilmDirector @defer(label: \"pageQuery$defer$FilmDirector\")\n  }\n}\n\nfragment FilmDirector on Film {\n  director\n}\n\nfragment FilmTitle on Film {\n  title\n}\n"
   }
 };
 })();
 
-(node as any).hash = "6efcb83c8c788d9d58222d96f74c0ee1";
+(node as any).hash = "59a2c42faa716c0696f1fc28d6735cf0";
 
 export default node;
