@@ -8,6 +8,7 @@ import {
   Store,
 } from "relay-runtime";
 import { Sink } from "relay-runtime/lib/network/RelayObservable";
+import RelayModernEnvironment from "relay-runtime/lib/store/RelayModernEnvironment";
 
 const fetchQuery: FetchFunction = (operation) => {
   return Observable.create((sink) => {
@@ -18,7 +19,13 @@ const fetchQuery: FetchFunction = (operation) => {
   });
 };
 
+let clientSideRelayEnvironment: RelayModernEnvironment | null = null;
+
 export const createRelayEnvironment = (isClient?: boolean) => {
+  if (isClient && clientSideRelayEnvironment) {
+    return clientSideRelayEnvironment;
+  }
+
   const network = NetworkWithReplay.create(fetchQuery);
   const store = new Store(new RecordSource());
 
@@ -27,6 +34,10 @@ export const createRelayEnvironment = (isClient?: boolean) => {
     network,
     store,
   });
+
+  if (isClient && !clientSideRelayEnvironment) {
+    clientSideRelayEnvironment = environment;
+  }
 
   return environment;
 };
