@@ -36,6 +36,50 @@ Especially with `@defer` and `@stream` directives, it is possible to start rende
 4. Use different same root queries for React Server Components and Client Components
 5. Server Streaming to React Server Components and Client Components
 
+## Example
+
+Demo: https://relay-rsc-poc.vercel.app/  
+[Example Code](https://github.com/tobias-tengler/relay-rsc-poc/tree/main/packages/example/src/app)
+
+`<FilmTitle>` is a React Server Component  
+`<FilmDirector>` is a React Client Component
+
+```tsx
+export default async function Home() {
+  const data = await getStreamableQuery<pageQuery>(
+    graphql`
+      query pageQuery {
+        films {
+          id
+          ...FilmTitle
+          ...FilmDirector @defer
+        }
+      }
+    `,
+    {}
+  );
+
+  return (
+    <StreamedHydration responses={[data]}>
+      <main>
+        <h1>Films</h1>
+        {data.films?.map(
+          (film) =>
+            film && (
+              <>
+                <FilmTitle filmKey={film} />
+                <Suspense key={film.id} fallback={<div>🌀 Loading...</div>}>
+                  <FilmDirector filmKey={film} />
+                </Suspense>
+              </>
+            )
+        )}
+      </main>
+    </StreamedHydration>
+  );
+}
+```
+
 ## Similar POCs
 
 There are similar POCs:
