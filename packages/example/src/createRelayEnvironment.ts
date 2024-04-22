@@ -21,8 +21,8 @@ const fetchQuery: FetchFunction = (operation) => {
 
 let clientSideRelayEnvironment: RelayModernEnvironment | null = null;
 
-export const createRelayEnvironment = (isClient?: boolean) => {
-  if (isClient && clientSideRelayEnvironment) {
+export const createRelayEnvironment = (isBrowser?: boolean) => {
+  if (isBrowser && clientSideRelayEnvironment) {
     return clientSideRelayEnvironment;
   }
 
@@ -30,12 +30,12 @@ export const createRelayEnvironment = (isClient?: boolean) => {
   const store = new Store(new RecordSource());
 
   const environment = new EnvironmentWithReplay({
-    isServer: !isClient,
+    isServer: !isBrowser,
     network,
     store,
   });
 
-  if (isClient && !clientSideRelayEnvironment) {
+  if (isBrowser && !clientSideRelayEnvironment) {
     clientSideRelayEnvironment = environment;
   }
 
