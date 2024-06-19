@@ -105,7 +105,7 @@ export async function getStreamableQuery<TOperation extends OperationType>(
 
 /**
  * In React Server Components it is not possible to use useFragment directly
- * as it relies on hooks. Therefore we need to read the fragment manually using
+ * as it relies on context. Therefore we need to read the fragment manually using
  * the imaginary new Realy readFragment API.
  */
 export const useFragment = ((gqlQuery, fragmentRef) => {
