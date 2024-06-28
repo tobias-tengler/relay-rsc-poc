@@ -13,9 +13,13 @@
     "relay": "relay-compiler --watch"
   },
   "dependencies": {
-    "next": "14.2.0",
-    "react": "^18",
-    "react-dom": "^18",
+    "@graphql-yoga/plugin-defer-stream": "^3.4.0",
+    "graphql": "17.0.0-alpha.5",
+    "graphql-yoga": "^5.4.0",
+    "meros": "^1.3.0",
+    "next": "15.0.0-rc.0",
+    "react": "19.0.0-rc-58af67a8f8-20240628",
+    "react-dom": "19.0.0-rc-58af67a8f8-20240628",
     "react-relay": "16.2.0",
     "relay-rsc": "workspace:*",
     "relay-runtime": "16.2.0"
